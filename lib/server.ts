@@ -1,0 +1,7 @@
+import {createClient} from '@supabase/supabase-js';
+import {catalog} from './catalog';
+export function db(){const url=process.env.NEXT_PUBLIC_SUPABASE_URL,key=process.env.SUPABASE_SERVICE_ROLE_KEY;return url&&key?createClient(url,key,{auth:{persistSession:false}}):null;}
+export async function currentCatalog(){const client=db();if(!client)return catalog;const {data,error}=await client.from('settings').select('value').eq('id','catalog').single();if(error)throw new Error('No fue posible consultar el catálogo.');return data.value as typeof catalog;}
+export async function admin(request:Request){const client=db();if(!client)throw new Error('Servicio no configurado.');const token=request.headers.get('authorization')?.replace(/^Bearer /,'');if(!token)throw new Error('No autorizado.');const {data,error}=await client.auth.getUser(token);if(error||!data.user||!process.env.ADMIN_EMAIL||data.user.email?.toLowerCase()!==process.env.ADMIN_EMAIL.toLowerCase())throw new Error('No autorizado.');return client;}
+const hits=new Map<string,{count:number;at:number}>();
+export function rateLimit(req:Request){const key=req.headers.get('x-forwarded-for')?.split(',')[0]||'local';const now=Date.now();if(hits.size>10000)for(const [k,v]of hits)if(now-v.at>60000)hits.delete(k);const v=hits.get(key);if(!v||now-v.at>60000){hits.set(key,{count:1,at:now});return;}if(++v.count>12)throw new Error('Demasiadas solicitudes. Espera un minuto.');}

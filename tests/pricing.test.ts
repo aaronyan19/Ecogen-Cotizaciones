@@ -1,0 +1,16 @@
+import {test} from 'node:test';
+import assert from 'node:assert/strict';
+import {catalog} from '../lib/catalog';
+import {calculate,compatible,recommend} from '../lib/pricing';
+import {quoteSchema,verifyFile} from '../lib/validation';
+import {makePdf} from '../lib/pdf';
+const calc=(panels=8,kw=5,wires=2,months=0)=>calculate({panels,kw,wires,months});
+test('los siete precios base e inversores predeterminados',()=>{assert.deepEqual(catalog.packages.map(p=>p.price),[3190000,3890000,4890000,6090000,6890000,7990000,8990000]);assert.deepEqual(catalog.packages.map(p=>p.base),[3.6,3.6,5,5,5,6,10]);for(const p of catalog.packages)assert.equal(calc(p.panels,p.base).total,p.price);});
+test('cargo exacto de 220 V en todos los paquetes',()=>{for(const p of catalog.packages)assert.equal(calc(p.panels,p.base,1).cash,p.price+200000);assert.equal(calc().cash,4890000);assert.equal(calc(8,5,1).cash,5090000);assert.equal(calc(16,10).cash,8990000);assert.equal(calc(16,10,1).cash,9190000);});
+test('capacidades comerciales e inversor sin capacidad inventada',()=>{assert(compatible(8,3.6));assert(!compatible(10,3.6));assert(compatible(12,5));assert(!compatible(14,5));assert(compatible(22,10));assert(!compatible(24,10));assert(compatible(14,6));assert(!compatible(16,6));assert.throws(()=>calc(16,5));});
+test('incrementos fraccionarios y ausencia de descuentos',()=>{assert.equal(calc(4,5).cash,3430000);assert.equal(calc(4,10).cash,4030000);assert.equal(calc(8,10).inverter,600000);assert.equal(calc(14,10).inverter,480000);assert.equal(calc(8,3.6).cash,4890000);});
+test('financiamiento sin acumular recargos',()=>{assert.equal(calc(8,5,1,6).total,5242700);assert.equal(calc(8,5,1,3).total,5090000);assert.equal(calc(8,5,1,12).total,5700800);for(const p of catalog.packages)for(const f of catalog.financing){const v=calc(p.panels,p.base,1,f.months);assert.equal(v.installment*((f.months||1)-1)+v.last,v.total);assert(Number.isInteger(v.last));}});
+test('redondeo siempre al siguiente par y límites',()=>{for(const [v,n] of [[4,4],[4.1,6],[5,6],[6,6],[6.1,8],[7.9,8],[8.1,10]])assert.equal(recommend(v*180).panels,n);assert.equal(recommend(180).panels,4);assert(recommend(4000).custom);assert.throws(()=>recommend(NaN));assert.throws(()=>recommend(0));});
+test('formulario rechaza falta de consentimiento y configuración inválida',()=>{assert(!quoteSchema.safeParse({name:'Ana',phone:'123'}).success);assert.throws(()=>calc(7));assert.throws(()=>calc(8,5,3));assert.throws(()=>calc(8,5,2,9));});
+test('archivos: valida tamaño, MIME y firma real',async()=>{await assert.rejects(()=>verifyFile(new File(['fake'],'a.png',{type:'image/png'})));await assert.rejects(()=>verifyFile(new File(['x'],'a.exe',{type:'application/octet-stream'})));await assert.rejects(()=>verifyFile(new File([new Uint8Array(10485761)],'a.pdf',{type:'application/pdf'})));await verifyFile(new File(['%PDF-1.7'],'a.pdf',{type:'application/pdf'}));});
+test('PDF genera documento válido',async()=>{const b=await makePdf({number:'ECO-PRUEBA',configuration:{panels:8,kw:5,wires:1,months:6},pricing:calc(8,5,1,6),catalog_snapshot:catalog});assert.equal(Buffer.from(b).subarray(0,5).toString(),'%PDF-');assert(b.length>1500);});
