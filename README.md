@@ -10,6 +10,9 @@ Aplicación en español con Next.js, TypeScript, Tailwind, Supabase, OpenAI y pd
 
 Sin variables configuradas aparece un aviso de demostración. El botón de envío **no guarda ni envía** solicitudes en ese modo. No se usan clientes ficticios ni contraseñas administrativas predeterminadas.
 
+## Fichas técnicas
+Las cuatro fichas PDF proporcionadas están en `public/fichas-tecnicas`. Se pueden abrir en otra pestaña desde «Nuestros equipos» y desde los pasos de configuración y revisión del cotizador, donde se muestra la del panel GCL de 630 W y la del inversor seleccionado (Growatt de 3.6, 5 o 10 kW). La opción de 6 kW informa que su ficha está pendiente; no se sustituye por otro modelo. Los documentos son referencias y los equipos definitivos requieren confirmación técnica. No requieren credenciales ni servicios externos.
+
 ## Conectar servicios reales
 1. Crea un proyecto Supabase. Ejecuta `supabase/schema.sql` en su editor SQL.
 2. Copia `.env.example` a `.env.local`. Introduce URL y clave pública de Supabase; la clave service role debe permanecer privada. Nunca subas este archivo a GitHub.
@@ -21,7 +24,7 @@ Sin variables configuradas aparece un aviso de demostración. El botón de enví
 En cloud, las llamadas requieren acceso a tu dominio Supabase `PROYECTO.supabase.co` y, para IA, `api.openai.com`. Solicita esos destinos en la configuración del entorno sin eliminar otros dominios existentes. Los secretos deben introducirse de forma segura en los ajustes, nunca en el chat.
 
 ## Validación
-`npm test` prueba precios, redondeos, compatibilidad, financiamiento, formularios, firmas de archivos y PDF. `npm run test:e2e` ejecuta los seis casos de navegador, con la app ya iniciada en el puerto 3000 y Chromium en `/usr/bin/chromium` (ajusta `playwright.config.ts` para tu equipo). `npm run typecheck` verifica TypeScript. `npm run build` prepara la versión de producción. `npm start` ejecuta esa versión. Las pruebas de integración requieren tu proyecto Supabase de pruebas; no se declaran ejecutadas sin él.
+`npm test` prueba precios, redondeos, compatibilidad, financiamiento, formularios, firmas de archivos y PDF. `npm run test:e2e` ejecuta los ocho casos de navegador, con la app ya iniciada en el puerto 3000 y Chromium en `/usr/bin/chromium` (ajusta `playwright.config.ts` para tu equipo). `npm run typecheck` verifica TypeScript. `npm run build` prepara la versión de producción. `npm start` ejecuta esa versión. Las pruebas de integración requieren tu proyecto Supabase de pruebas; no se declaran ejecutadas sin él.
 
 ## Implementado
 - Diseño adaptable, navegación, siete paquetes y flujo de tres pasos que conserva la selección.
@@ -48,3 +51,6 @@ No se ha publicado la aplicación. Tras completar pendientes, puede desplegarse 
 
 ## Evidencia de esta entrega
 Se ejecutaron 9 pruebas unitarias/funcionales y 6 casos E2E (3 por tamaño de pantalla), TypeScript y compilación de producción. Las pruebas de acceso confirman rechazo de solicitudes no autenticadas en demostración; el aislamiento con una base de datos real sigue pendiente. No se ejecutaron pruebas de persistencia ni IA real sin credenciales.
+
+## Validación de fichas técnicas
+Pasaron las 9 pruebas existentes, TypeScript y los 8 casos E2E en escritorio y emulación móvil, incluyendo las cuatro respuestas PDF y el cambio de ficha por inversor. Los PDF conservan los bytes de los originales proporcionados. La compilación de producción se verificó con `npm run build -- --webpack`: Turbopack falla en este entorno al intentar abrir un puerto interno (`Operation not permitted`). Para repetir toda la suite, iniciar una instancia nueva o esperar la ventana del límite de solicitudes; las ejecuciones consecutivas comparten ese contador. No se validaron servicios externos reales ni se publicó la aplicación.
