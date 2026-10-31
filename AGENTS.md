@@ -11,3 +11,10 @@ Aplicación Next.js/TypeScript en español, MXN, para Chihuahua. Usar el checkou
 - No publicar ni contratar servicios sin autorización. No enviar mensajes a clientes automáticamente.
 - Ejecutar npm test, npm run typecheck y npm run build antes de dar una versión por validada.
 - Mantener README y pendientes honestos. Integraciones externas sin credenciales no se consideran probadas.
+
+## Cotizador público simplificado (solicitud vigente)
+- Abrir sin paquete seleccionado salvo que el cliente pulse explícitamente una tarjeta de paquete. Mostrar precios solo después de elegir paneles.
+- Inversores incluidos fijos: 4/6 paneles → 3.6 kW; 8/10/12 → 5 kW; 14 → 6 kW; 16 → 10 kW. Sin selector de inversor adicional en el flujo público.
+- No pedir correo, consumo del periodo, hilos ni recibo en el cotizador. Nombre opcional. No agregar automáticamente el cargo eléctrico; revisión y posibles adecuaciones por separado.
+- Enviar cotización abre WhatsApp a 526142847477 con texto preparado. El cliente confirma en WhatsApp; no afirmar envío, recepción ni almacenamiento confirmado desde el sitio. No se requiere agente ni API para este enlace.
+- Las reglas anteriores de consumo e hilos siguen correspondiendo a las rutas de integración anteriores, no al formulario público simplificado.

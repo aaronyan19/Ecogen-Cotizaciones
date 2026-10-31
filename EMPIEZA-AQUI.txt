@@ -14,18 +14,17 @@ Si el puerto 3000 está ocupado, cierra la otra aplicación que lo esté usando.
 
 QUÉ PUEDES PROBAR
 - Los siete paquetes de paneles y sus precios.
-- Cotización de tres pasos con datos de prueba, sin datos personales reales.
-- Cambiar paneles, inversor, servicio eléctrico y forma de pago.
+- Cotización en una sola pantalla: elige paneles y forma de pago.
+- Inversor incluido según el número de paneles, sin selección adicional.
 - Consultar las cuatro fichas PDF en Nuestros equipos y en el cotizador.
 - Descargar la vista previa PDF de la cotización.
 - Revisar el diseño desde tu navegador con emulación de pantalla móvil.
 
-MODO DEMOSTRACIÓN
-La app funciona sin configurar cuentas ni claves.
-Las solicitudes no se guardan ni se envían a ECOGEN en este modo.
-La lectura automática del recibo y la administración con datos reales requieren
-configurar los servicios descritos en README.md. Puedes capturar el consumo
-manualmente. La ficha del inversor de 6 kW sigue pendiente.
+ENVÍO POR WHATSAPP
+La app funciona sin configurar cuentas ni claves. El botón de envío abre WhatsApp
+con la cotización preparada para +52 614 284 7477. El cliente debe pulsar Enviar
+dentro de WhatsApp. No se guarda una solicitud en la base de datos ni se confirma
+la entrega desde el sitio. La ficha del inversor de 6 kW sigue pendiente.
 
 Este ZIP contiene el código completo y las cuatro fichas originales integradas.
 No es una página publicada en internet ni un instalador independiente de Node.js.
