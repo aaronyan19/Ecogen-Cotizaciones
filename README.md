@@ -48,3 +48,6 @@ No se ha publicado la aplicación. Tras completar pendientes, puede desplegarse 
 
 ## Evidencia de esta entrega
 Se ejecutaron 9 pruebas unitarias/funcionales y 6 casos E2E (3 por tamaño de pantalla), TypeScript y compilación de producción. Las pruebas de acceso confirman rechazo de solicitudes no autenticadas en demostración; el aislamiento con una base de datos real sigue pendiente. No se ejecutaron pruebas de persistencia ni IA real sin credenciales.
+
+## Privacidad y protección
+El aviso en `/privacidad` incluye finalidades, recibos opcionales, análisis con IA y derechos ARCO. Completa las variables `PRIVACY_RESPONSIBLE_NAME`, `PRIVACY_ADDRESS`, `PRIVACY_EMAIL` y `PRIVACY_RETENTION` con datos reales antes de recibir información de clientes; requiere revisión legal. Consulta [SECURITY.md](SECURITY.md) para configuración de cuentas, permisos Supabase, limitaciones y verificaciones de producción. Las pruebas locales no verifican la base de datos desplegada.
