@@ -1,6 +1,11 @@
-# ECOGEN Solar — primera versión funcional
+# ECOGEN Solar — cotizador simplificado
 
 Aplicación en español con Next.js, TypeScript, Tailwind, Supabase, OpenAI y pdf-lib. **Versión preliminar de desarrollo: no habilitar todavía para captar datos reales.**
+
+## Cotizador público actual
+Una pantalla permite elegir 4, 6, 8, 10, 12, 14 o 16 paneles; escribir nombre, declarar servicio de 220 V y adjuntar opcionalmente JPG/PNG/PDF. No solicita teléfono, correo ni consumo; el inversor incluido se asigna según el catálogo. El total se actualiza para contado, 3, 6 o 12 meses y contempla el cargo eléctrico cuando corresponde. Se puede descargar PDF con nombre y consultar las fichas recuperadas de la rama entrega/fichas-tecnicas: GCL 630 W y Growatt 3.6/5/10 kW. La ficha de 6 kW sigue pendiente.
+
+El recibo solo se transmite al pulsar «Enviar mi cotización y recibo», con consentimiento. No se envía a IA automáticamente ni mediante WhatsApp. Guardar solicitudes/archivos requiere Supabase; en demostración se informa que no se guardó. La persistencia real sigue sin validarse con credenciales. Sin teléfono o correo, esta solicitud no permite contactar al cliente desde esos medios.
 
 ## Cómo abrirla en tu computadora
 1. Instala Node.js 24 LTS y descarga este repositorio.
@@ -24,7 +29,7 @@ En cloud, las llamadas requieren acceso a tu dominio Supabase `PROYECTO.supabase
 `npm test` prueba precios, redondeos, compatibilidad, financiamiento, formularios, firmas de archivos y PDF. `npm run test:e2e` ejecuta los seis casos de navegador, con la app ya iniciada en el puerto 3000 y Chromium en `/usr/bin/chromium` (ajusta `playwright.config.ts` para tu equipo). `npm run typecheck` verifica TypeScript. `npm run build` prepara la versión de producción. `npm start` ejecuta esa versión. Las pruebas de integración requieren tu proyecto Supabase de pruebas; no se declaran ejecutadas sin él.
 
 ## Implementado
-- Diseño adaptable, navegación, siete paquetes y flujo de tres pasos que conserva la selección.
+- Diseño adaptable, navegación, siete paquetes y cotizador en una pantalla.
 - Datos y consentimiento, recibo con vista previa, validación de tamaño/MIME/firma, captura manual, estimación y avisos técnicos.
 - Motor de cálculo compartido y recálculo obligatorio en servidor con catálogo vigente.
 - Persistencia Supabase, recibos privados, identificador único por intento y restricción única contra duplicados. Si se pierde la respuesta de un envío ya guardado, se informa que existe; no se vuelve a insertar ni se revela un enlace privado nuevo.

@@ -14,3 +14,7 @@ test('redondeo siempre al siguiente par y límites',()=>{for(const [v,n] of [[4,
 test('formulario rechaza falta de consentimiento y configuración inválida',()=>{assert(!quoteSchema.safeParse({name:'Ana',phone:'123'}).success);assert.throws(()=>calc(7));assert.throws(()=>calc(8,5,3));assert.throws(()=>calc(8,5,2,9));});
 test('archivos: valida tamaño, MIME y firma real',async()=>{await assert.rejects(()=>verifyFile(new File(['fake'],'a.png',{type:'image/png'})));await assert.rejects(()=>verifyFile(new File(['x'],'a.exe',{type:'application/octet-stream'})));await assert.rejects(()=>verifyFile(new File([new Uint8Array(10485761)],'a.pdf',{type:'application/pdf'})));await verifyFile(new File(['%PDF-1.7'],'a.pdf',{type:'application/pdf'}));});
 test('PDF genera documento válido',async()=>{const b=await makePdf({number:'ECO-PRUEBA',configuration:{panels:8,kw:5,wires:1,months:6},pricing:calc(8,5,1,6),catalog_snapshot:catalog});assert.equal(Buffer.from(b).subarray(0,5).toString(),'%PDF-');assert(b.length>1500);});
+test('solicitud simplificada acepta nombre sin teléfono ni correo y exige consentimiento',()=>{
+ const q={name:'Ana Pérez',consent:true,panels:4,kw:3.6,wires:2,months:0,consumption:null,requestId:'550e8400-e29b-41d4-a716-446655440000'};
+ const parsed=quoteSchema.parse(q);assert.equal(parsed.phone,'');assert.equal(parsed.email,'');assert(!quoteSchema.safeParse({...q,consent:false}).success);
+});
