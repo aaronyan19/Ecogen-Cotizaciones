@@ -29,11 +29,11 @@ test('mensaje refleja paneles, inversor, aumento a 220 V y total financiado vige
  assert.match(line(text,'Inversor incluido:'),/5\s*kW/);
  assert.match(line(text,'Servicio de 220 V:'),/no/i);
  assert(text.includes(mxn(200000)),'Incluye el cargo eléctrico de $2,000 MXN');
- assert(line(text,'Subtotal de contado:').includes(mxn(5090000)));
+ assert(line(text,'Subtotal de contado:').includes(mxn(5190000)));
  assert(line(text,'Forma de pago:').includes('6'));
- assert(line(text,'Total:').includes(mxn(5242700)));
- assert(text.includes(mxn(873783)),'Incluye la mensualidad calculada en centavos');
- assert(line(text,'Última mensualidad:').includes(mxn(873785)));
+ assert(line(text,'Total:').includes(mxn(5345700)));
+ assert(text.includes(mxn(890950)),'Incluye la mensualidad calculada en centavos');
+ assert(line(text,'Última mensualidad:').includes(mxn(890950)));
  assert.match(text,/preliminar/i);
 });
 
@@ -57,8 +57,8 @@ test('servicio eléctrico desconocido conserva el aviso de revisión y cargo no 
  assert.match(text,/pendiente.*revisi[oó]n|revisi[oó]n.*pendiente/i);
  assert.match(text,/\$2,000(?:\.00)?/);
  assert.match(text,/no incluido/i);
- assert(line(text,'Subtotal de contado:').includes(mxn(4890000)));
- assert(line(text,'Total:').includes(mxn(4890000)));
+ assert(line(text,'Subtotal de contado:').includes(mxn(4990000)));
+ assert(line(text,'Total:').includes(mxn(4990000)));
 });
 
 test('rechaza nombres inválidos, paquetes inexistentes y plazos no disponibles',()=>{
@@ -81,5 +81,5 @@ test('usa el catálogo suministrado para inversor, precio, cargo y financiamient
  assert(line(text,'Total:').includes(mxn(5617500)));
  assert(line(text,'Última mensualidad:').includes(mxn(936250)));
  assert(text.includes(mxn(350000)));
- assert.equal(catalog.packages.find(p=>p.panels===8)!.price,4890000);
+ assert.equal(catalog.packages.find(p=>p.panels===8)!.price,4990000);
 });

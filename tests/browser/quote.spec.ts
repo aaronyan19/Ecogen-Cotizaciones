@@ -1,20 +1,25 @@
 import {test,expect} from '@playwright/test';
 test('cotizador simple: siete paquetes, 220 V, plazos y PDF sin teléfono ni recibo obligatorio',async({page})=>{
- await page.goto('/');await page.getByRole('button',{name:'Cotiza tu sistema solar',exact:true}).click();
+ await page.goto('/');
+ for(const [panels,kw] of [[4,3.6],[6,3.6],[8,5],[10,5],[12,5],[14,6],[16,10]]){
+  const card=page.locator('article.package').filter({has:page.getByRole('heading',{name:`${panels} paneles`,exact:true})});
+  await expect(card.locator('.panel-art')).toHaveText(`Inversor ${kw} kW`);
+ }
+ await page.getByRole('button',{name:'Cotiza tu sistema solar',exact:true}).click();
  const d=page.getByRole('dialog');
  await expect(d.locator('.summary')).toHaveCount(0);
  await expect(d.getByRole('textbox')).toHaveCount(1);
  await d.getByLabel('Nombre completo').fill('Ana Pérez');
- for(const [n,total] of [[4,'$31,900.00'],[6,'$38,900.00'],[8,'$48,900.00'],[10,'$60,900.00'],[12,'$68,900.00'],[14,'$79,900.00'],[16,'$89,900.00']]){
+ for(const [n,total] of [[4,'$31,900.00'],[6,'$38,900.00'],[8,'$49,900.00'],[10,'$60,900.00'],[12,'$68,900.00'],[14,'$79,900.00'],[16,'$89,900.00']]){
   await d.getByRole('button',{name:`${n} paneles`,exact:true}).click();await expect(d.locator('.total')).toContainText(String(total));
  }
  await d.getByRole('button',{name:'8 paneles',exact:true}).click();
  await d.getByLabel('¿Cuentas con servicio eléctrico de 220 V?').selectOption('1');
- await expect(d.locator('.total')).toContainText('$50,900.00');
- for(const [months,total] of [['3','$50,900.00'],['6','$52,427.00'],['12','$57,008.00'],['0','$50,900.00']]){
+ await expect(d.locator('.total')).toContainText('$51,900.00');
+ for(const [months,total] of [['3','$51,900.00'],['6','$53,457.00'],['12','$58,128.00'],['0','$51,900.00']]){
   await d.getByLabel('¿Cómo quieres pagar?').selectOption(months);await expect(d.locator('.total')).toContainText(total);
  }
- await d.getByLabel('¿Cuentas con servicio eléctrico de 220 V?').selectOption('2');await expect(d.locator('.total')).toContainText('$48,900.00');
+ await d.getByLabel('¿Cuentas con servicio eléctrico de 220 V?').selectOption('2');await expect(d.locator('.total')).toContainText('$49,900.00');
  const download=page.waitForEvent('download');await d.getByRole('button',{name:'Descargar mi cotización en PDF'}).click();expect((await download).suggestedFilename()).toBe('ECOGEN-cotizacion.pdf');
  expect(await d.evaluate(el=>el.scrollWidth<=el.clientWidth)).toBeTruthy();
 });
