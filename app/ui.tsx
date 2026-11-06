@@ -5,6 +5,7 @@ import {catalog as defaults,mxn,type Catalog} from '@/lib/catalog';
 import {DatasheetLink} from './datasheets';
 import {panelDatasheet, inverterDatasheets} from '@/lib/datasheets';
 import QuoteBuilder from './quote-builder';
+import {whatsappContact} from '@/lib/whatsapp';
 export default function Home({initialCatalog=defaults,demo}:{initialCatalog?:Catalog;demo:boolean}){
  const [open,setOpen]=useState(false),[panels,setPanels]=useState<number|null>(null);
  const c=initialCatalog;
@@ -16,7 +17,7 @@ export default function Home({initialCatalog=defaults,demo}:{initialCatalog?:Cat
  <section className="process section" id="proceso"><div><div className="eyebrow">ASÍ DE SENCILLO</div><h2>Tu nueva energía,<br/>a unos pasos.</h2><p>Elige tus paneles, indica si tienes 220 V y consulta tu cotización.</p><button className="text-button" onClick={()=>launch()}>Comienza tu cotización <ArrowRight size={18}/></button></div><div className="steps">{[['01','Elige tus paneles','Elige cuántos paneles quieres para tu sistema.'],['02','Configura tu sistema','Consulta el precio con el inversor incluido y elige tu forma de pago.'],['03','Revisamos contigo','Consulta las fichas técnicas y descarga tu cotización; adjunta tu recibo si lo deseas.']].map(([n,t,d])=><div key={n}><span>{n}</span><div><h3>{t}</h3><p>{d}</p></div></div>)}</div></section>
  <section className="section equipment" id="equipos"><div><div className="eyebrow">TECNOLOGÍA CON PROPÓSITO</div><h2>Conoce lo que<br/>llevará tu sistema.</h2><p>Consulta la información de los equipos. Los modelos específicos se confirman durante la revisión técnica.</p></div><article><Sun/><h3>Panel solar GCL · 630 W</h3><p>Consulta la ficha proporcionada del panel de referencia.</p><DatasheetLink sheet={panelDatasheet}/></article><article><Zap/><h3>Inversores solares</h3><p>Opciones de 3.6, 5, 6 y 10 kW.</p><div className="datasheet-list">{inverterDatasheets.map(sheet=><DatasheetLink key={sheet.kw} sheet={sheet}/>)}</div></article></section>
  <section className="closing"><div><div className="eyebrow">EL FUTURO SE CONSTRUYE HOY</div><h2>Haz que el sol trabaje para ti.</h2><p>Descubre un sistema solar pensado para tu hogar.</p></div><button className="gold" onClick={()=>launch()}>Quiero mi cotización <ArrowUpRight size={20}/></button></section></main>
- <footer><a className="brand" href="/"><Sun/><span>ECOGEN<small>S O L A R</small></span></a><p>Chihuahua, Chihuahua, México<br/>WhatsApp: +52 614 284 7477</p><a href="/privacidad">Aviso de privacidad</a><a href="/admin">Acceso administrativo</a><small>© {new Date().getFullYear()} ECOGEN Solar</small></footer>
+ <footer><a className="brand" href="/"><Sun/><span>ECOGEN<small>S O L A R</small></span></a><p>Chihuahua, Chihuahua, México<br/><a href={whatsappContact.url} target="_blank" rel="noopener noreferrer">WhatsApp: {whatsappContact.displayPhone}</a></p><a href="/privacidad">Aviso de privacidad</a><a href="/admin">Acceso administrativo</a><small>© {new Date().getFullYear()} ECOGEN Solar</small></footer>
  {open&&<QuoteBuilder demo={demo} catalog={c} panels={panels} onChoose={setPanels} onClose={()=>setOpen(false)}/>}
  </>;
 }

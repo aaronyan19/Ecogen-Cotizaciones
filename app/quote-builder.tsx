@@ -1,10 +1,11 @@
 'use client';
 import {useEffect, useRef, useState} from 'react';
-import {X, Check} from 'lucide-react';
+import {X, Check, MessageCircle} from 'lucide-react';
 import {type Catalog, mxn, financingNotice} from '@/lib/catalog';
 import {customerQuote} from '@/lib/customer-quote';
 import {validateFile} from '@/lib/validation';
 import {QuoteDatasheets} from './datasheets';
+import {quoteWhatsAppUrl, whatsappContact} from '@/lib/whatsapp';
 
 export default function QuoteBuilder({catalog:c, panels, onChoose, onClose,demo}:{demo:boolean;catalog:Catalog;panels:number|null;onChoose:(n:number)=>void;onClose:()=>void}) {
  const [months,setMonths]=useState(0),[name,setName]=useState(''),[message,setMessage]=useState(''),[busy,setBusy]=useState(false);
@@ -14,6 +15,13 @@ export default function QuoteBuilder({catalog:c, panels, onChoose, onClose,demo}
  const dialog=useRef<HTMLDialogElement>(null);
  useEffect(()=>{const d=dialog.current;d?.showModal();return()=>d?.close();},[]);
  const quote=panels===null?null:customerQuote(panels,months,c,wires);
+ function shareWhatsApp(){
+  if(panels===null||!quote)return;
+  if(name.trim().length<3||!consent){setMessage('Completa tu nombre y acepta el aviso de privacidad para continuar por WhatsApp.');return;}
+  const url=quoteWhatsAppUrl({name,panels,wires,months},c);
+  window.open(url,'_blank','noopener,noreferrer');
+  setMessage('Confirma el envío en WhatsApp. Si quieres compartir el PDF o tu recibo, adjúntalos allí manualmente.');
+ }
  async function download(){
   if(panels===null||!quote)return;if(name.trim().length<3){setMessage('Escribe tu nombre completo para preparar la cotización.');return;}
   setBusy(true);setMessage('');
@@ -49,9 +57,11 @@ export default function QuoteBuilder({catalog:c, panels, onChoose, onClose,demo}
    {months>0&&<p className="notice">{financingNotice}</p>}
    <p className="quote-conditions">{c.conditions} {wires===0?'Servicio eléctrico pendiente de revisión; posible cargo de $2,000 MXN no incluido.':wires===1?'Incluye $2,000 MXN por revisión y aumento a 220 V, sujeto a revisión técnica.':'Servicio de 220 V declarado por el cliente, pendiente de verificación.'}</p>
    <QuoteDatasheets kw={quote.kw}/>
-   <label className="check"><input type="checkbox" checked={consent} onChange={e=>setConsent(e.target.checked)}/> Acepto el <a href="/privacidad" target="_blank" rel="noopener noreferrer">aviso de privacidad</a> para enviar mi solicitud y el recibo, si lo adjunto.</label>
-   {demo&&<p className="notice">Modo demostración: puedes consultar y descargar tu cotización. Las solicitudes y recibos no se guardan ni se envían.</p>}
-   <button className="gold" disabled={busy||saved} onClick={save}>{saved?'Solicitud guardada':'Enviar mi cotización y recibo'}</button>
+   <label className="check"><input type="checkbox" checked={consent} onChange={e=>setConsent(e.target.checked)}/> Acepto el <a href="/privacidad" target="_blank" rel="noopener noreferrer">aviso de privacidad</a> para compartir mi cotización con ECOGEN y, si guardo mi solicitud, el recibo que adjunte.</label>
+   <button className="whatsapp-cta" disabled={busy} onClick={shareWhatsApp}><MessageCircle size={20} aria-hidden="true"/> Enviar cotización por WhatsApp</button>
+   <p className="whatsapp-help">Se abrirá WhatsApp para ECOGEN al {whatsappContact.displayPhone} con tu cotización escrita. Pulsa Enviar en WhatsApp para compartirla. El PDF y el recibo no se adjuntan automáticamente; puedes descargarlos o seleccionarlos y adjuntarlos en el chat.</p>
+   {demo&&<p className="notice">Modo demostración: puedes consultar y descargar tu cotización, o abrir WhatsApp para enviarla tú. El guardado de solicitudes y recibos no está disponible.</p>}
+   <button className="text-button" disabled={busy||saved} onClick={save}>{saved?'Solicitud guardada':'Guardar mi solicitud y recibo'}</button>
    <button className="text-button" disabled={busy} onClick={download}>{busy?'Preparando PDF…':'Descargar mi cotización en PDF'}</button>
   </>:<p className="empty-quote" role="status">Selecciona el número de paneles para comenzar tu cotización.</p>}
  {message&&<p role="status" className="notice">{message}</p>}
